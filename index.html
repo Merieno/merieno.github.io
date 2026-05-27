@@ -240,8 +240,6 @@ footer p{font-size:.72rem;color:var(--white2);letter-spacing:.05em;}
 <body>
 
 <canvas id="particles"></canvas>
-<div id="cur"></div>
-<div id="cur-trail"></div>
 <div id="prog"></div>
 
 <!-- LOADER -->
@@ -363,7 +361,7 @@ footer p{font-size:.72rem;color:var(--white2);letter-spacing:.05em;}
     </div>
   </div>
   <div class="fc-right">
-    <img src="https://i.imgur.com/FoGhyWd.jpg" alt="Zolvane Realty" class="fc-img"/>
+    <img src="zolvane.jpg" alt="Zolvane Realty" class="fc-img"/>
     <div class="fc-overlay"></div>
   </div>
 </div>
@@ -383,7 +381,7 @@ footer p{font-size:.72rem;color:var(--white2);letter-spacing:.05em;}
     </div>
   </div>
   <div class="fc-right">
-    <img src="https://i.imgur.com/6pzyfyQ.jpg" alt="NexFreight Logistics" class="fc-img"/>
+    <img src="nexfreight.jpg" alt="NexFreight Logistics" class="fc-img"/>
     <div class="fc-overlay"></div>
   </div>
 </div>
@@ -461,16 +459,7 @@ function drawParticles(){
 }
 drawParticles();
 
-/* ── CURSOR ── */
-const cur=document.getElementById('cur');
-const trail=document.getElementById('cur-trail');
-let mx=0,my=0,tx=0,ty=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;gsap.set(cur,{x:mx,y:my});});
-gsap.ticker.add(()=>{tx+=(mx-tx)*.13;ty+=(my-ty)*.13;gsap.set(trail,{x:tx,y:ty});});
-document.querySelectorAll('a,button,.featured-card,.cf-btn').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cur.classList.add('grow');});
-  el.addEventListener('mouseleave',()=>{cur.classList.remove('grow');});
-});
+
 
 /* ── SCROLL PROGRESS ── */
 window.addEventListener('scroll',()=>{
