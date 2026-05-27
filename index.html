@@ -1,218 +1,513 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Merieno — Web Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@300;400;500;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#08080a;--surface:#0f0f12;
+  --white:#f0ede8;--white2:#7a7875;--accent:#c8f04a;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+  --fh:'Cabinet Grotesk',sans-serif;--fi:'Instrument Serif',serif;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:var(--fh);overflow-x:hidden;}
+
+/* ── LOADER ── */
+#loader{
+  position:fixed;inset:0;background:#000;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+  animation:loaderOut 0.6s ease 2.2s forwards;
+}
+@keyframes loaderOut{
+  0%{opacity:1;}
+  100%{opacity:0;visibility:hidden;}
+}
+.glitch{
+  font-family:var(--fh);font-size:clamp(36px,7vw,80px);
+  font-weight:900;color:#fff;letter-spacing:0.12em;
+  position:relative;animation:glitchMain 1.5s infinite;
+}
+.glitch::before,.glitch::after{
+  content:attr(data-text);position:absolute;top:0;left:0;
+  width:100%;height:100%;
+}
+.glitch::before{
+  color:#c8f04a;
+  clip-path:polygon(0 0,100% 0,100% 40%,0 40%);
+  animation:glitchTop 1.5s infinite;
+}
+.glitch::after{
+  color:#ff2d55;
+  clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%);
+  animation:glitchBot 1.5s infinite;
+}
+@keyframes glitchMain{
+  0%,100%{transform:translate(0);}
+  20%{transform:translate(-2px,2px);}
+  40%{transform:translate(2px,-2px);}
+  60%{transform:translate(-1px,1px);}
+}
+@keyframes glitchTop{
+  0%,100%{transform:translate(0);}
+  20%{transform:translate(4px,0);}
+  40%{transform:translate(-4px,0);}
+  60%{transform:translate(2px,0);}
+}
+@keyframes glitchBot{
+  0%,100%{transform:translate(0);}
+  20%{transform:translate(-4px,0);}
+  40%{transform:translate(4px,0);}
+  60%{transform:translate(-2px,0);}
+}
+
+/* ── PROGRESS ── */
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:8001;width:0%;box-shadow:0 0 8px var(--accent);}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.4rem 3rem;display:flex;align-items:center;justify-content:space-between;opacity:0;transform:translateY(-10px);}
+.nav-logo{font-family:var(--fh);font-weight:800;font-size:.95rem;letter-spacing:.18em;color:var(--white);text-decoration:none;text-transform:uppercase;}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{font-size:.78rem;color:var(--white);text-decoration:none;letter-spacing:.1em;opacity:.45;transition:opacity .2s;text-transform:uppercase;}
+.nav-links a:hover{opacity:1;}
+.nav-dot{display:flex;align-items:center;gap:.5rem;font-size:.72rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;opacity:.8;}
+.ndot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,240,74,.5);}50%{box-shadow:0 0 0 6px rgba(200,240,74,0);}}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 3rem 5rem;position:relative;overflow:hidden;}
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;will-change:transform;}
+.orb-a{width:800px;height:800px;top:-250px;right:-250px;background:radial-gradient(circle,rgba(200,240,74,.07) 0%,transparent 65%);}
+.orb-b{width:600px;height:600px;bottom:-150px;left:-200px;background:radial-gradient(circle,rgba(74,200,240,.05) 0%,transparent 65%);}
+.hero-bg-word{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fh);font-weight:800;font-size:22vw;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.025);white-space:nowrap;pointer-events:none;user-select:none;will-change:transform;}
+.h-line{overflow:hidden;line-height:1;}
+.h-line h1{font-family:var(--fh);font-size:clamp(3.2rem,8.5vw,9rem);font-weight:800;line-height:.93;letter-spacing:-.04em;will-change:transform;}
+.h-line:nth-child(3) h1{color:var(--white2);}
+.h-line h1 em{font-family:var(--fi);font-style:italic;font-weight:400;}
+.hero-foot{display:flex;align-items:flex-end;justify-content:space-between;margin-top:3.5rem;}
+.hero-desc{max-width:360px;font-size:.97rem;color:var(--white2);font-weight:300;line-height:1.85;}
+.hero-desc strong{color:var(--white);font-weight:600;}
+.hero-actions{display:flex;flex-direction:column;align-items:flex-end;gap:.9rem;}
+.btn-pill{display:inline-flex;align-items:center;gap:.7rem;background:var(--accent);color:#060608;padding:.85rem 1.75rem;font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;border-radius:100px;transition:transform .2s,box-shadow .2s;}
+.btn-pill:hover{transform:scale(1.05);box-shadow:0 0 40px rgba(200,240,74,.35);}
+.btn-pill .arr{transition:transform .2s;}
+.btn-pill:hover .arr{transform:translate(4px,-4px);}
+.btn-ghost{display:inline-flex;align-items:center;gap:.6rem;color:var(--white2);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--border2);padding-bottom:.2rem;transition:color .2s,border-color .2s;}
+.btn-ghost:hover{color:var(--white);border-color:rgba(255,255,255,.3);}
+.hero-scroll-hint{font-size:.68rem;letter-spacing:.18em;color:var(--white2);opacity:.3;text-transform:uppercase;}
+
+/* ── MARQUEE ── */
+.marquee-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.3rem 0;overflow:hidden;white-space:nowrap;}
+.marquee-track{display:inline-flex;gap:2.5rem;animation:mscroll 22s linear infinite;}
+.marquee-track span{font-size:.8rem;font-weight:500;color:var(--white2);letter-spacing:.1em;text-transform:uppercase;}
+.marquee-track .sep{color:var(--accent);font-size:.6rem;}
+@keyframes mscroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ── SECTIONS ── */
+.sec{padding:8rem 3rem;position:relative;overflow:hidden;}
+.sec-tag{font-size:.7rem;letter-spacing:.22em;color:var(--white2);opacity:.45;text-transform:uppercase;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;}
+.sec-tag::before{content:'';display:inline-block;width:20px;height:1px;background:var(--white2);opacity:.4;}
+.sec-h{font-family:var(--fh);font-size:clamp(2rem,4.5vw,3.8rem);font-weight:800;line-height:1.02;letter-spacing:-.03em;margin-bottom:4rem;}
+.sec-h em{font-family:var(--fi);font-style:italic;font-weight:400;color:var(--white2);}
+.hr{height:1px;background:var(--border);margin:0;transform-origin:left;}
+
+/* ── ABOUT ── */
+#about{background:var(--surface);}
+.about-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:6rem;align-items:start;}
+.photo-frame{position:relative;width:100%;max-width:320px;overflow:hidden;}
+.photo-img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top center;display:block;will-change:transform;}
+.photo-label{background:var(--bg);border-top:1px solid var(--border);padding:.8rem 1rem;display:flex;align-items:center;justify-content:space-between;}
+.photo-label span{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--white2);}
+.photo-label .badge{background:var(--accent);color:#060608;font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .7rem;border-radius:100px;}
+.about-right-col{display:flex;flex-direction:column;gap:3rem;}
+.about-bio{font-size:1.05rem;color:var(--white2);font-weight:300;line-height:1.9;}
+.about-bio strong{color:var(--white);font-weight:600;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.5rem;}
+.tag{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:.35rem 1rem;border:1px solid var(--border2);color:var(--white2);border-radius:100px;}
+.tag.hi{border-color:rgba(200,240,74,.4);color:var(--accent);}
+.num-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);}
+.num-box{background:var(--surface);padding:1.75rem 1.25rem;text-align:center;}
+.num-val{font-family:var(--fh);font-size:2.6rem;font-weight:800;line-height:1;color:var(--white);}
+.num-val sup{font-size:1.2rem;color:var(--accent);}
+.num-lbl{font-size:.68rem;letter-spacing:.12em;color:var(--white2);text-transform:uppercase;margin-top:.4rem;}
+.skill-list{display:flex;flex-direction:column;}
+.skill-row{display:flex;align-items:center;gap:1.5rem;padding:1.1rem 0;border-bottom:1px solid var(--border);}
+.skill-name{font-size:.88rem;font-weight:500;min-width:180px;}
+.skill-track{flex:1;height:2px;background:rgba(255,255,255,.06);overflow:hidden;}
+.skill-fill{height:100%;background:var(--accent);width:0%;box-shadow:0 0 8px rgba(200,240,74,.4);}
+.skill-pct{font-size:.72rem;color:var(--white2);font-family:monospace;min-width:32px;text-align:right;}
+
+/* ── PROJECTS ── */
+#projects{background:var(--bg);}
+.featured-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:2rem;display:grid;grid-template-columns:1.1fr 1fr;transition:border-color .4s;align-items:center;}
+.featured-card:hover{border-color:var(--border2);}
+.fc-left{padding:3rem;}
+.fc-badge{display:inline-flex;align-items:center;gap:.5rem;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);background:rgba(200,240,74,.08);border:1px solid rgba(200,240,74,.2);padding:.3rem .9rem;border-radius:100px;margin-bottom:1.5rem;}
+.fc-title{font-family:var(--fh);font-size:2rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:1rem;}
+.fc-desc{font-size:.92rem;color:var(--white2);font-weight:300;line-height:1.8;margin-bottom:1.5rem;}
+.fc-tech{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;}
+.chip{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .8rem;border:1px solid var(--border2);color:var(--white2);border-radius:100px;}
+.fc-links{display:flex;gap:1rem;flex-wrap:wrap;}
+.fc-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:opacity .2s;}
+.fc-link.primary{color:var(--accent);}
+.fc-link.sec{color:var(--white2);}
+.fc-link:hover{opacity:.6;}
+.fc-right{position:relative;overflow:hidden;height:400px;}
+.fc-img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;opacity:.85;transition:opacity .4s,transform .6s cubic-bezier(.16,1,.3,1);}
+.featured-card:hover .fc-img{opacity:1;transform:scale(1.03);}
+.fc-overlay{position:absolute;inset:0;background:linear-gradient(to right,var(--surface) 0%,transparent 25%);pointer-events:none;}
+
+/* ── CONTACT ── */
+#contact{background:var(--surface);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;}
+.c-avail{display:inline-flex;align-items:center;gap:.5rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;}
+.c-avail-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+.c-email{font-family:var(--fh);font-size:clamp(1rem,2vw,1.6rem);font-weight:800;color:var(--white);text-decoration:none;display:block;border-bottom:2px solid var(--accent);padding-bottom:.4rem;margin:1.5rem 0 2rem;transition:color .2s;word-break:break-all;}
+.c-email:hover{color:var(--accent);}
+.c-note{font-size:.95rem;color:var(--white2);font-weight:300;line-height:1.85;margin-bottom:2rem;}
+.socials{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem;}
+.s-link{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--white2);text-decoration:none;padding:.45rem 1.1rem;border:1px solid var(--border2);border-radius:100px;transition:all .2s;}
+.s-link:hover{color:var(--accent);border-color:rgba(200,240,74,.4);}
+.cf{display:flex;flex-direction:column;gap:1rem;}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.cf-g{display:flex;flex-direction:column;gap:.35rem;}
+.cf-g label{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--white2);}
+.cf-g input,.cf-g textarea{background:rgba(255,255,255,.04);border:1px solid var(--border2);color:var(--white);padding:.85rem 1rem;font-family:var(--fh);font-size:.9rem;border-radius:8px;outline:none;width:100%;transition:border-color .2s,background .2s;}
+.cf-g input:focus,.cf-g textarea:focus{border-color:var(--accent);background:rgba(200,240,74,.025);}
+.cf-g textarea{min-height:120px;resize:vertical;}
+.cf-btn{background:var(--accent);color:#060608;border:none;padding:.95rem 2rem;font-family:var(--fh);font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:100px;cursor:pointer;transition:transform .2s,box-shadow .2s;margin-top:.5rem;}
+.cf-btn:hover{transform:scale(1.02);box-shadow:0 0 30px rgba(200,240,74,.25);}
+
+/* ── FOOTER ── */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:2.2rem 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.f-logo{font-family:var(--fh);font-weight:800;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;}
+footer p{font-size:.72rem;color:var(--white2);letter-spacing:.05em;}
+.f-link{font-size:.72rem;color:var(--white2);text-decoration:none;letter-spacing:.05em;transition:color .2s;}
+.f-link:hover{color:var(--accent);}
+
+/* ── PARTICLES ── */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:1.2rem 1.5rem;}
+  .nav-links,.nav-dot{display:none;}
+  #hero{padding:0 1.5rem 4rem;}
+  .hero-foot{flex-direction:column;align-items:flex-start;gap:2rem;}
+  .hero-actions{align-items:flex-start;}
+  .sec{padding:5rem 1.5rem;}
+  .about-grid,.contact-grid{grid-template-columns:1fr;gap:3rem;}
+  .featured-card{grid-template-columns:1fr;}
+  .fc-right{height:220px;}
+  .num-row{grid-template-columns:1fr 1fr;}
+  footer{flex-direction:column;text-align:center;}
+  .cf-row{grid-template-columns:1fr;}
+}
+</style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1">&lt;title&gt;Celebrity Stylist Portfolio&lt;/title&gt;</p>
-<p class="p1">&lt;style&gt;</p>
-<p class="p1">body{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>margin:0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>font-family:Arial, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>background:#0a0a0a;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>color:#fff;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">/* HERO */</p>
-<p class="p1">.hero{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>text-align:center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>padding:80px 20px 40px;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.hero h1{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>font-size:40px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>margin:0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing:2px;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.hero p{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>color:#aaa;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>margin-top:10px;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">/* LINK BUTTONS */</p>
-<p class="p1">.links{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>display:flex;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>flex-direction:column;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>gap:12px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>max-width:300px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>margin:30px auto;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.links a{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>text-decoration:none;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>padding:12px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>border:1px solid #333;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>border-radius:10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>color:#fff;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>text-align:center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>transition:0.3s;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>background:#111;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.links a:hover{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>background:#fff;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>color:#000;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">/* FILTERS */</p>
-<p class="p1">.filters{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>text-align:center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>margin:40px 0 20px;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.filters button{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>margin:5px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>padding:8px 12px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>border:none;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>border-radius:6px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>cursor:pointer;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>background:#222;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>color:#fff;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>transition:0.3s;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.filters button:hover{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>background:#fff;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>color:#000;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">/* GALLERY */</p>
-<p class="p1">.gallery{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>display:grid;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>grid-template-columns:repeat(auto-fit,minmax(200px,1fr));</p>
-<p class="p1"><span class="Apple-converted-space">    </span>gap:10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>padding:20px;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.item{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>position:relative;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>cursor:pointer;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.item img{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>width:100%;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>height:250px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>object-fit:cover;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>border-radius:10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>transition:0.3s;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.item img:hover{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>transform:scale(1.03);</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">/* LIGHTBOX */</p>
-<p class="p1">.lightbox{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>display:none;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>position:fixed;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>top:0;left:0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>width:100%;height:100%;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>background:rgba(0,0,0,0.95);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>justify-content:center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>align-items:center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>z-index:1000;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">.lightbox img{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>max-width:90%;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>max-height:80%;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">/* FOOTER */</p>
-<p class="p1">footer{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>text-align:center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>padding:40px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>color:#777;</p>
-<p class="p1">}</p>
-<p class="p1">&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div class="hero"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Your Name&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;Celebrity Stylist • Lagos, Nigeria&lt;/p&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;!-- LINKTREE STYLE BUTTONS --&gt;</p>
-<p class="p1">&lt;div class="links"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="https://wa.me/234XXXXXXXXXX"&gt;Book via WhatsApp&lt;/a&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="#gallery"&gt;View Portfolio&lt;/a&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="https://instagram.com"&gt;Instagram&lt;/a&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="mailto:you@email.com"&gt;Email Me&lt;/a&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;!-- FILTERS --&gt;</p>
-<p class="p1">&lt;div class="filters"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="filter('all')"&gt;All&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="filter('editorial')"&gt;Editorial&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="filter('wedding')"&gt;Wedding&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="filter('runway')"&gt;Runway&lt;/button&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;!-- GALLERY --&gt;</p>
-<p class="p1">&lt;div class="gallery" id="gallery"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="item editorial"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;img src="https://images.unsplash.com/photo-1520975928316-8d2c0b2b8f5f" onclick="openImg(this.src)"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="item wedding"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;img src="https://images.unsplash.com/photo-1520975661595-6453be3f7070" onclick="openImg(this.src)"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="item runway"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1" onclick="openImg(this.src)"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="item editorial"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;img src="https://images.unsplash.com/photo-1521334884684-d80222895322" onclick="openImg(this.src)"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;!-- LIGHTBOX --&gt;</p>
-<p class="p1">&lt;div class="lightbox" id="lightbox" onclick="this.style.display='none'"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;img id="lightbox-img"&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;footer&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>© Celebrity Stylist Portfolio • Lagos</p>
-<p class="p1">&lt;/footer&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p1">function openImg(src){</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('lightbox').style.display='flex';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('lightbox-img').src = src;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function filter(category){</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let items = document.querySelectorAll('.item');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>items.forEach(item =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if(category === 'all'){</p>
-<p class="p1"><span class="Apple-converted-space">            </span>item.style.display = 'block';</p>
-<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>item.style.display = item.classList.contains(category) ? 'block' : 'none';</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1">}</p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+<canvas id="particles"></canvas>
+<div id="prog"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="glitch" data-text="MERIENO">MERIENO</div>
+</div>
+
+<!-- NAV -->
+<nav id="mainnav">
+  <a href="#" class="nav-logo">Merieno</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-dot"><div class="ndot"></div>Available for work</div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-orb orb-a" id="orb1"></div>
+  <div class="hero-orb orb-b" id="orb2"></div>
+  <div class="hero-bg-word" id="bgword">BUILD</div>
+  <div class="h-line"><h1 id="hl1">I build the</h1></div>
+  <div class="h-line"><h1 id="hl2"><em>web of</em> tomorrow</h1></div>
+  <div class="h-line"><h1 id="hl3">— beautifully.</h1></div>
+  <div class="hero-foot" id="herofoot">
+    <p class="hero-desc">Full-stack web developer based in <strong>Lagos, Nigeria.</strong> I craft fast, beautiful digital products from pixel to production.</p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn-pill">See my work <span class="arr">↗</span></a>
+      <a href="#contact" class="btn-ghost">Get in touch →</a>
+      <span class="hero-scroll-hint">↓ Scroll to explore</span>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>HTML5</span><span class="sep">✦</span><span>CSS3</span><span class="sep">✦</span>
+    <span>JavaScript</span><span class="sep">✦</span><span>Tailwind CSS</span><span class="sep">✦</span>
+    <span>PHP</span><span class="sep">✦</span><span>MySQL</span><span class="sep">✦</span>
+    <span>React</span><span class="sep">✦</span><span>Node.js</span><span class="sep">✦</span>
+    <span>UI / UX Design</span><span class="sep">✦</span><span>REST APIs</span><span class="sep">✦</span>
+    <span>HTML5</span><span class="sep">✦</span><span>CSS3</span><span class="sep">✦</span>
+    <span>JavaScript</span><span class="sep">✦</span><span>Tailwind CSS</span><span class="sep">✦</span>
+    <span>PHP</span><span class="sep">✦</span><span>MySQL</span><span class="sep">✦</span>
+    <span>React</span><span class="sep">✦</span><span>Node.js</span><span class="sep">✦</span>
+    <span>UI / UX Design</span><span class="sep">✦</span><span>REST APIs</span><span class="sep">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="sec">
+  <div class="sec-tag" id="about-tag">01 — About</div>
+  <div class="about-grid">
+    <div>
+      <div class="photo-frame" id="photoframe">
+        <img src="photo.jpg" alt="Merieno" class="photo-img" id="photoimg"/>
+        <div class="photo-label">
+          <span>Oguname Terence Merieno</span>
+          <span class="badge">Lagos, NG</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-right-col">
+      <div>
+        <h2 class="sec-h" id="about-h">The developer<br/><em>behind the code</em></h2>
+        <p class="about-bio" id="bio1">I'm <strong>Merieno</strong> — a full-stack web developer who obsesses over the gap between great design and solid engineering. I don't just build websites; I build <strong>experiences</strong> that feel premium, load fast, and convert.</p>
+        <p class="about-bio" id="bio2" style="margin-top:.8rem;">Based in <strong>Lagos, Nigeria</strong>, I've shipped real products using modern tools — from sleek frontends to robust PHP backends. Every pixel is intentional.</p>
+        <div class="tag-row" id="tagrow" style="margin-top:1.5rem;">
+          <span class="tag hi">Full-Stack Dev</span>
+          <span class="tag">UI Engineer</span>
+          <span class="tag">PHP / MySQL</span>
+          <span class="tag">Tailwind CSS</span>
+          <span class="tag">Lagos, NG</span>
+        </div>
+      </div>
+      <div class="num-row" id="numrow">
+        <div class="num-box"><div class="num-val">3<sup>+</sup></div><div class="num-lbl">Years building</div></div>
+        <div class="num-box"><div class="num-val">10<sup>+</sup></div><div class="num-lbl">Projects shipped</div></div>
+        <div class="num-box"><div class="num-val">∞</div><div class="num-lbl">Coffee cups</div></div>
+        <div class="num-box"><div class="num-val">100<sup>%</sup></div><div class="num-lbl">Client satisfaction</div></div>
+      </div>
+      <div class="skill-list" id="skilllist">
+        <div class="skill-row"><span class="skill-name">HTML / CSS</span><div class="skill-track"><div class="skill-fill" data-w="96"></div></div><span class="skill-pct">96%</span></div>
+        <div class="skill-row"><span class="skill-name">JavaScript</span><div class="skill-track"><div class="skill-fill" data-w="88"></div></div><span class="skill-pct">88%</span></div>
+        <div class="skill-row"><span class="skill-name">Tailwind CSS</span><div class="skill-track"><div class="skill-fill" data-w="92"></div></div><span class="skill-pct">92%</span></div>
+        <div class="skill-row"><span class="skill-name">PHP / MySQL</span><div class="skill-track"><div class="skill-fill" data-w="82"></div></div><span class="skill-pct">82%</span></div>
+        <div class="skill-row"><span class="skill-name">React / Next.js</span><div class="skill-track"><div class="skill-fill" data-w="75"></div></div><span class="skill-pct">75%</span></div>
+        <div class="skill-row"><span class="skill-name">UI / UX Design</span><div class="skill-track"><div class="skill-fill" data-w="85"></div></div><span class="skill-pct">85%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr" id="hr1"/>
+
+<!-- PROJECTS -->
+<section id="projects" class="sec">
+  <div class="sec-tag" id="proj-tag">02 — Work</div>
+  <h2 class="sec-h" id="proj-h">Selected <em>projects</em></h2>
+  <div class="featured-card" id="card1">
+    <div class="fc-left">
+      <div class="fc-badge">✦ Featured Project — 01</div>
+      <div class="fc-title">Zolvane Realty</div>
+      <div class="fc-desc">A premium luxury real estate platform. Features property listings, detailed pages with gallery, contact & inquiry system, and a fully responsive mobile layout.</div>
+      <div class="fc-tech">
+        <span class="chip">HTML5</span><span class="chip">CSS3</span><span class="chip">JavaScript</span>
+        <span class="chip">Tailwind CSS</span><span class="chip">PHP</span><span class="chip">MySQL</span>
+      </div>
+      <div class="fc-links">
+        <a href="https://merieno.github.io/Zolvane-Realty/" target="_blank" class="fc-link primary">Live Demo ↗</a>
+        <a href="https://github.com/Merieno/Zolvane-Realty" target="_blank" class="fc-link sec">GitHub →</a>
+      </div>
+    </div>
+    <div class="fc-right">
+      <img src="zolvane.webp" alt="Zolvane Realty" class="fc-img"/>
+      <div class="fc-overlay"></div>
+    </div>
+  </div>
+  <div class="featured-card" id="card2">
+    <div class="fc-left">
+      <div class="fc-badge">✦ Featured Project — 02</div>
+      <div class="fc-title">NexFreight Logistics</div>
+      <div class="fc-desc">A premium logistics and shipment tracking platform. Features real-time tracking UI, delivery management, freight service pages, and a modern responsive layout.</div>
+      <div class="fc-tech">
+        <span class="chip">HTML5</span><span class="chip">Tailwind CSS</span>
+        <span class="chip">JavaScript</span><span class="chip">PHP</span><span class="chip">MySQL</span>
+      </div>
+      <div class="fc-links">
+        <a href="https://merieno.github.io/nexfreight-logistics/" target="_blank" class="fc-link primary">Live Demo ↗</a>
+        <a href="https://github.com/Merieno" target="_blank" class="fc-link sec">GitHub →</a>
+      </div>
+    </div>
+    <div class="fc-right">
+      <img src="nexfreight.webp" alt="NexFreight Logistics" class="fc-img"/>
+      <div class="fc-overlay"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr" id="hr2"/>
+
+<!-- CONTACT -->
+<section id="contact" class="sec">
+  <div class="contact-grid">
+    <div id="contact-left">
+      <div class="sec-tag">03 — Contact</div>
+      <h2 class="sec-h" id="contact-h">Let's build<br/><em>something great</em></h2>
+      <div class="c-avail"><div class="c-avail-dot"></div>Available for new projects</div>
+      <p class="c-note">Have a project idea? Need a developer who delivers on time and on budget? Let's talk — I'm always open to interesting work.</p>
+      <a href="mailto:mhe.terrence@gmail.com" class="c-email">mhe.terrence@gmail.com</a>
+      <div class="socials">
+        <a href="https://github.com/Merieno" target="_blank" class="s-link">GitHub</a>
+        <a href="https://www.behance.net/Merieno" target="_blank" class="s-link">Behance</a>
+        <a href="https://twitter.com/m3r13n0" target="_blank" class="s-link">Twitter</a>
+        <a href="https://wa.me/2347066293035" target="_blank" class="s-link">WhatsApp</a>
+      </div>
+    </div>
+    <div id="contact-form">
+      <form class="cf" action="https://formspree.io/f/xnjroknw" method="POST">
+        <div class="cf-row">
+          <div class="cf-g"><label>Name</label><input type="text" name="name" placeholder="John Doe" required/></div>
+          <div class="cf-g"><label>Email</label><input type="email" name="email" placeholder="john@example.com" required/></div>
+        </div>
+        <div class="cf-g"><label>Subject</label><input type="text" name="subject" placeholder="Project enquiry"/></div>
+        <div class="cf-g"><label>Message</label><textarea name="message" placeholder="Tell me about your project..." required></textarea></div>
+        <button type="submit" class="cf-btn">Send Message ↗</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="f-logo">Merieno</span>
+  <p>© 2026 Oguname Terence Merieno — All rights reserved</p>
+  <a href="https://www.behance.net/Merieno" target="_blank" class="f-link">Behance ↗</a>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+/* PARTICLES */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, dots = [];
+function resizeCanvas(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+for(let i=0;i<25;i++){
+  dots.push({x:Math.random()*1920,y:Math.random()*1080,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5});
+}
+function drawParticles(){
+  ctx.clearRect(0,0,W,H);
+  dots.forEach(d=>{
+    d.x+=d.vx;d.y+=d.vy;
+    if(d.x<0||d.x>W)d.vx*=-1;
+    if(d.y<0||d.y>H)d.vy*=-1;
+    ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(200,240,74,0.45)';ctx.fill();
+  });
+  dots.forEach((a,i)=>dots.slice(i+1).forEach(b=>{
+    const dx=a.x-b.x,dy=a.y-b.y,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<110){
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle=`rgba(200,240,74,${.08*(1-dist/110)})`;
+      ctx.lineWidth=.5;ctx.stroke();
+    }
+  }));
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* SCROLL PROGRESS */
+window.addEventListener('scroll',()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  document.getElementById('prog').style.width=pct+'%';
+});
+
+/* HERO — fires after loader CSS animation completes (2.2s) */
+function startHero(){
+  gsap.to('#mainnav',{opacity:1,y:0,duration:.8,ease:'power3.out'});
+  gsap.set(['#hl1','#hl2','#hl3'],{yPercent:110});
+  gsap.to(['#hl1','#hl2','#hl3'],{yPercent:0,duration:1,ease:'power4.out',stagger:.12,delay:.1});
+  gsap.from('#bgword',{scale:1.3,opacity:0,duration:1.4,ease:'power3.out',delay:.2});
+  gsap.from('#herofoot',{y:40,opacity:0,duration:1,ease:'power3.out',delay:.6});
+  document.addEventListener('mousemove',e=>{
+    const rx=(e.clientX/window.innerWidth-.5);
+    const ry=(e.clientY/window.innerHeight-.5);
+    gsap.to('#orb1',{x:rx*60,y:ry*40,duration:1.2,ease:'power2.out'});
+    gsap.to('#orb2',{x:rx*-40,y:ry*-30,duration:1.4,ease:'power2.out'});
+    gsap.to('#bgword',{x:rx*30,y:ry*15,duration:1.5,ease:'power2.out'});
+  });
+}
+setTimeout(startHero, 2300);
+
+/* SCROLL ANIMATIONS */
+gsap.utils.toArray('.hr').forEach(hr=>{
+  gsap.from(hr,{scaleX:0,duration:1.2,ease:'power3.out',
+    scrollTrigger:{trigger:hr,start:'top 90%'}});
+});
+gsap.from('#about-tag',{opacity:0,x:-30,duration:.7,ease:'power3.out',
+  scrollTrigger:{trigger:'#about',start:'top 80%'}});
+gsap.from('#about-h',{opacity:0,y:50,duration:1,ease:'power4.out',
+  scrollTrigger:{trigger:'#about-h',start:'top 82%'}});
+gsap.from('#photoframe',{opacity:0,x:-60,duration:1.1,ease:'power3.out',
+  scrollTrigger:{trigger:'#photoframe',start:'top 80%'}});
+ScrollTrigger.create({trigger:'#photoframe',start:'top bottom',end:'bottom top',
+  onUpdate:self=>{gsap.set('#photoimg',{y:self.progress*-40});}});
+gsap.from('#bio1',{opacity:0,y:35,duration:.9,ease:'power3.out',
+  scrollTrigger:{trigger:'#bio1',start:'top 85%'}});
+gsap.from('#bio2',{opacity:0,y:35,duration:.9,ease:'power3.out',delay:.15,
+  scrollTrigger:{trigger:'#bio2',start:'top 85%'}});
+gsap.from('#tagrow .tag',{opacity:0,y:20,scale:.9,duration:.6,ease:'back.out(1.7)',stagger:.07,
+  scrollTrigger:{trigger:'#tagrow',start:'top 88%'}});
+gsap.from('#numrow .num-box',{opacity:0,y:40,scale:.85,duration:.7,ease:'back.out(1.5)',stagger:.12,
+  scrollTrigger:{trigger:'#numrow',start:'top 85%'}});
+gsap.from('#skilllist .skill-row',{opacity:0,x:-40,duration:.7,ease:'power3.out',stagger:.1,
+  scrollTrigger:{trigger:'#skilllist',start:'top 82%',
+    onEnter:()=>{
+      document.querySelectorAll('.skill-fill').forEach((b,i)=>{
+        gsap.to(b,{width:b.dataset.w+'%',duration:1.3,ease:'power3.out',delay:i*.1});
+      });
+    }
+  }
+});
+gsap.from('#card1',{opacity:0,y:70,duration:1,ease:'power3.out',
+  scrollTrigger:{trigger:'#card1',start:'top 82%'}});
+gsap.from('#card2',{opacity:0,y:70,duration:1,ease:'power3.out',delay:.15,
+  scrollTrigger:{trigger:'#card2',start:'top 82%'}});
+gsap.from('#proj-tag',{opacity:0,x:-30,duration:.7,
+  scrollTrigger:{trigger:'#projects',start:'top 80%'}});
+gsap.from('#proj-h',{opacity:0,y:50,duration:1,ease:'power4.out',
+  scrollTrigger:{trigger:'#proj-h',start:'top 82%'}});
+gsap.from('#contact-left',{opacity:0,x:-50,duration:1,ease:'power3.out',
+  scrollTrigger:{trigger:'#contact',start:'top 80%'}});
+gsap.from('#contact-form',{opacity:0,x:50,duration:1,ease:'power3.out',delay:.15,
+  scrollTrigger:{trigger:'#contact',start:'top 80%'}});
+gsap.from('#contact-h',{opacity:0,y:40,duration:1,ease:'power4.out',
+  scrollTrigger:{trigger:'#contact-h',start:'top 85%'}});
+gsap.from('.s-link',{opacity:0,y:15,stagger:.08,duration:.5,ease:'power2.out',
+  scrollTrigger:{trigger:'.socials',start:'top 90%'}});
+gsap.from('footer',{opacity:0,y:30,duration:.8,ease:'power3.out',
+  scrollTrigger:{trigger:'footer',start:'top 95%'}});
+
+/* SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();gsap.to(window,{scrollTo:{y:t,offsetY:80},duration:1,ease:'power3.inOut'});}
+  });
+});
+</script>
 </body>
 </html>
